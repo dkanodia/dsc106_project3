@@ -82,7 +82,7 @@ function initVisualization() {
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
   // Use d3.csv to load the data
-  d3.csv("data/mice.csv").then(function(csvData) {
+  d3.csv("../data/mice.csv").then(function(csvData) {
     console.log("Data loaded successfully", csvData.slice(0, 5));
     
     // Process the data
