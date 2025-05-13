@@ -1,0 +1,53 @@
+nav {
+  display: flex;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  --border-color: oklch(50% 10% 200 / 40%);
+  max-width: 960px;   
+  margin: 0 auto; 
+}
+nav a {
+  flex: 1;
+  padding: 0.5em;
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+  border-bottom: 0 solid transparent;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+nav a.current {
+  border-bottom: 0.4em solid var(--border-color);
+  padding-bottom: 0.1em;
+}
+nav a:hover {
+  border-bottom: 0.4em solid darkblue;
+  padding-bottom: 0.1em;
+  background-color: #d9d9ec; 
+  color: #000; 
+}
+.color-scheme {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 80%;
+  font-family: inherit;
+}
+
+.container {
+  max-width: 960px;  
+  margin: 0 auto;    
+  padding: 1rem;
+}
+
+nav,
+#chart {
+  max-width: 960px;   
+  margin: 0 auto;     
+}
+
+#chart svg {
+  display: block;
+  margin: 0 auto;
+}
+
+

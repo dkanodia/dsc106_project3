@@ -1,17 +1,40 @@
-// global.js
-import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
+const baseEl = document.querySelector("base");
+export const BASE_PATH = baseEl
+  ? baseEl.getAttribute("href")
+  : "/";
 
-// SVG canvas dimensions and margins
-export const WIDTH       = 960;
-export const HEIGHT      = 600;
-export const MARGIN      = { top: 30, right: 20, bottom: 50, left: 60 };
-export const innerWidth  = WIDTH  - MARGIN.left - MARGIN.right;
-export const innerHeight = HEIGHT - MARGIN.top  - MARGIN.bottom;
+const pages = [
+  { url: '/', title: 'Interactive Vizualization'},
+  { url: '/writeup/', title: 'Writeup'},
+  { url: '/about/', title: 'About'}
+];
 
-// Time formatter for tooltips (“HH:MM”)
-export const formatTime = d3.timeFormat("%H:%M");
+let nav = document.createElement('nav');
+document.body.prepend(nav);
 
-// Color scale for sex (“M” vs “F”)
-export const colorSex = d3.scaleOrdinal()
-  .domain(["M", "F"])
-  .range(["steelblue", "tomato"]);
+pages.forEach(p => {
+  let a = document.createElement("a");
+  
+  if (p.url.match(/^https?:\/\//)) {
+    a.href = p.url;
+  } else {
+    
+    a.href = p.url.startsWith(BASE_PATH)
+      ? p.url
+      : BASE_PATH.replace(/\/$/, "") + p.url;
+  }
+  a.textContent = p.title;
+
+  
+  if (
+    location.pathname.replace(/\/$/, "") ===
+    a.pathname.replace(/\/$/, "")
+  ) {
+    a.classList.add("current");
+  }
+  
+  if (a.host !== location.host) a.target = "_blank";
+
+  nav.append(a);
+});
+
