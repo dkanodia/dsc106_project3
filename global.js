@@ -1,6 +1,6 @@
 const baseEl = document.querySelector("base");
 export const BASE_PATH = baseEl
-  ? baseEl.getAttribute("href")
+  ? "/"
   : "/";
 
 const pages = [
