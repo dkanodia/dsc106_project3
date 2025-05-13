@@ -61,7 +61,7 @@ function initVisualization() {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
   // Load and preprocess data
-  d3.csv("/mice.csv").then(csvData => {
+  d3.csv("mice.csv").then(csvData => {
     const data = csvData.map(d => ({
       min:         +d.min_of_day,
       activity:    +d.act,
