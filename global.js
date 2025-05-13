@@ -4,7 +4,7 @@ export const BASE_PATH = baseEl
   : "/";
 
 const pages = [
-  { url: '/', title: 'Interactive Vizualization'},
+  { url: '', title: 'Interactive Vizualization'},
   { url: '/writeup/', title: 'Writeup'},
   { url: '/about/', title: 'About'}
 ];
