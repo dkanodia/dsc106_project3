@@ -8,11 +8,42 @@
     <script type="module" src="global.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-    
+
 <body>
     <div class="container">
-    <h4>Question</h4>
-    <div id="chart"></div>
+        <h4>Question</h4>
+        
+        <!-- Chart and Controls Section -->
+        <div id="chart">        </div>
+
+            <!-- Checkbox to toggle temperature line visibility -->
+            <label><input type="checkbox" id="temperature-checkbox" checked> Show Temperature</label>
+            
+            <!-- Play/Pause Button -->
+            <button id="play-button">Play</button>
+
+            <!-- Time scrubber (slider) to navigate through time -->
+            <input type="range" id="scrubber" min="0" max="1440" value="0">
+            
+            <!-- Time label showing current time -->
+            <!-- <span id="scrubber-label">00:00</span> -->
+            
+            <!-- Dropdown to select mouse -->
+            <select id="mouse-dropdown">
+                <option value="all">All Mice</option>
+                <!-- Additional options will be added dynamically -->
+            </select>
+
+            <!-- Controls for Animation Speed -->
+            <label for="speed-dropdown">Animation Speed:</label>
+            <select id="speed-dropdown">
+                <option value="5">Normal</option>
+                <option value="10">Fast</option>
+                <option value="1">Slow</option>
+            </select>
+
+            <!-- Checkbox to toggle activity line visibility -->
+            <label><input type="checkbox" id="activity-checkbox" checked> Show Activity</label>
     </div>
 </body>
 </html>

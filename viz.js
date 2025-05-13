@@ -1,54 +1,3 @@
-
-// Create a basic CSS style element
-const styleElement = document.createElement('style');
-styleElement.textContent = `
-  .tooltip {
-    position: absolute;
-    background: white;
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    pointer-events: none;
-    font-size: 14px;
-    z-index: 100;
-  }
-  
-  .bg.light {
-    fill: lightyellow;
-  }
-  
-  .bg.dark {
-    fill: lightgrey;
-  }
-  
-  .activity-line {
-    stroke: steelblue;
-    stroke-width: 1.5px;
-    fill: none;
-  }
-  
-  .temperature-line {
-    stroke: tomato;
-    stroke-width: 1.5px;
-    fill: none;
-  }
-  
-  .focus-line {
-    stroke: black;
-    stroke-width: 1px;
-  }
-  
-  .legend text {
-    font-size: 12px;
-  }
-  
-  .controls {
-    margin-bottom: 20px;
-  }
-`;
-document.head.appendChild(styleElement);
-
-// Load D3 from CDN
 function loadD3() {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
@@ -85,6 +34,7 @@ function initVisualization() {
   d3.csv(`${BASE_PATH}data/mice.csv`).then(function(csvData) {
     console.log("Data loaded successfully", csvData.slice(0, 5));
     
+    
     // Process the data
     const data = csvData.map(d => ({
       min: +d.min_of_day,
@@ -112,8 +62,9 @@ function initVisualization() {
     const yAct = d3.scaleLinear().domain([0, d3.max(rolled, d => d.avgAct)]).nice().range([height, 0]);
     const yTemp = d3.scaleLinear().domain(d3.extent(rolled, d => d.avgTemp)).nice().range([height, 0]);
 
-    // Set up controls
+    
     const playButton = d3.select("#play-button");
+    console.log(playButton);
     let playing = false;
     let timer;
     let currentTime = 0;
@@ -122,22 +73,25 @@ function initVisualization() {
     playButton.on("click", () => {
       playing = !playing;
       if (playing) {
-        timer = setInterval(updateTime, 100);
+        playButton.text("Stop"); // Change button text to Stop
+        timer = setInterval(updateTime, 200);
       } else {
+        playButton.text("Play"); // Change button text to Play
         clearInterval(timer);
       }
     });
 
+    
     const scrubber = d3.select("#scrubber");
-    scrubber.on("input", function() {
-      currentTime = +this.value;
-      updateVisualization();
-    });
+scrubber.on("input", function() {
+  currentTime = +this.value;
+  updateVisualization();
+});
 
     const speedDropdown = d3.select("#speed-dropdown");
-    speedDropdown.on("change", function() {
-      animationRate = +this.value;
-    });
+speedDropdown.on("change", function() {
+  animationRate = +this.value;
+});
 
     function updateTime() {
       currentTime = (currentTime + animationRate) % 1440;
@@ -220,8 +174,8 @@ function initVisualization() {
       
       if (d) {
         tooltip
-          .style("left", `${x(d.min) + margin.left + 10}px`)
-          .style("top", `${margin.top + 20}px`)
+          .style("left", `${x(d.min)  + 350}px`)
+          .style("top", `${margin.top + 200}px`)
           .style("display", "inline-block")
           .html(`
             <strong>Time:</strong> ${Math.floor(d.min / 60)}h ${d.min % 60}m<br>
@@ -255,8 +209,8 @@ function initVisualization() {
             .style("top", `${event.pageY}px`)
             .style("display", "inline-block")
             .html(`
-              <strong>Time:</strong> ${Math.floor(d.min / 60)}h ${d.min % 60}m<br>
-              <strong>Activity:</strong> ${d.avgAct.toFixed(2)}<br>
+            <strong>Time:</strong> ${formatMinutes(d.min)}<br>
+            <strong>Activity:</strong> ${d.avgAct.toFixed(2)}<br>
               <strong>Temp:</strong> ${d.avgTemp.toFixed(2)} °C<br>
               <strong>Light:</strong> ${d.light ? "Day" : "Night"}
             `);
@@ -268,6 +222,11 @@ function initVisualization() {
           tooltip.style("display", "none");
         }
       });
+      scrubber.on("input", function() {
+        currentTime = +this.value;
+        updateVisualization();
+        d3.select("#scrubber-label").text(formatMinutes(d.min));
+      });
 
     // Add checkbox functionality
     const activityCheckbox = d3.select("#activity-checkbox");
@@ -276,16 +235,113 @@ function initVisualization() {
       svg.selectAll(".activity-line").style("visibility", visible ? "visible" : "hidden");
     });
 
+    function formatMinutes(mins) {
+      const hours = Math.floor(mins / 60);
+      const minutes = mins % 60;
+      const ampm = hours >= 12 ? "pm" : "am";
+      const hour12 = hours % 12 || 12;
+      return `${hour12}:${String(minutes).padStart(2, '0')} ${ampm}`;
+    }
+
+    const tempCheckbox = d3.select("#temperature-checkbox");
+tempCheckbox.on("change", function() {
+  svg.selectAll(".temperature-line")
+    .style("visibility", this.checked ? "visible" : "hidden");
+});
     // Add mouse dropdown functionality
+    const mouseIds = Array.from(new Set(csvData.map(d => d.mouse_id)));
+
+    // Add options to the mouse dropdown
     const mouseDropdown = d3.select("#mouse-dropdown");
+    mouseDropdown.selectAll("option")
+      .data(["all", ...mouseIds])  // Add "all" as the first option
+      .enter().append("option")
+      .attr("value", d => d)
+      .text(d => d === "all" ? "All Mice" : `Mouse ${d}`);
+    
     mouseDropdown.on("change", function() {
-      // In a real implementation, this would filter data for the selected mouse
       const mouseId = this.value;
-      console.log(`Selected mouse: ${mouseId}`);
+    
+      // Filter data based on selected mouse ID
+      const filteredData = csvData.filter(d => mouseId === "all" || d.mouse_id === mouseId);
+    
+      // Process the filtered data
+      const data = filteredData.map(d => ({
+        min: +d.min_of_day,
+        activity: +d.act,
+        temperature: +d.temp,
+        mouse_id: d.mouse_id,
+        light: d.light === "True"
+      }));
+    
+      // Recalculate rolled data based on filtered data
+      const newRolled = Array.from(
+        d3.rollup(
+          data,
+          v => ({
+            avgAct: d3.mean(v, d => d.activity),
+            avgTemp: d3.mean(v, d => d.temperature),
+            light: d3.mean(v, d => d.light ? 1 : 0) > 0.5
+          }),
+          d => d.min
+        ),
+        ([min, vals]) => ({ min, ...vals })
+      ).sort((a, b) => a.min - b.min);
+    
+      // Update the chart with new rolled data
+      updateChart(newRolled);
     });
 
-
-
+    function updateChart(newRolled) {
+      // Rebind the updated data
+      svg.selectAll(".activity-line")
+        .datum(newRolled)
+        .attr("d", lineAct);
+    
+      svg.selectAll(".temperature-line")
+        .datum(newRolled)
+        .attr("d", lineTemp);
+    
+      // Update the x-axis and y-axes with the new data, ensuring they stay within the chart bounds
+      yAct.domain([0, d3.max(newRolled, d => d.avgAct)]).nice();
+      yTemp.domain(d3.extent(newRolled, d => d.avgTemp)).nice();
+    
+      // Clip the range of the y-axis to the height of the chart
+      svg.select(".y-axis-left")
+        .call(d3.axisLeft(yAct).ticks(5));
+    
+      svg.select(".y-axis-right")
+        .call(d3.axisRight(yTemp).ticks(5));
+    
+      // Update the x-axis, ensuring the range does not go beyond the chart width
+      svg.select(".x-axis")
+        .call(xAxis);
+    
+      // Recreate background segments (light/dark segments), ensuring they fit within the chart width and height
+      const segments = [];
+      let segStart = newRolled[0].min, segLight = newRolled[0].light;
+      newRolled.forEach((d, i) => {
+        if (i > 0 && d.light !== segLight) {
+          segments.push({ start: segStart, end: newRolled[i].min, light: segLight });
+          segStart = d.min;
+          segLight = d.light;
+        }
+      });
+      segments.push({ start: segStart, end: 1440, light: segLight });
+    
+      svg.selectAll("rect.bg")
+        .data(segments)
+        .join("rect")
+        .attr("class", d => d.light ? "bg light" : "bg dark")
+        .attr("x", d => x(d.start))
+        .attr("y", 0)
+        .attr("width", d => Math.min(x(d.end), width))  // Ensure width doesn't go beyond the chart
+        .attr("height", height)
+        .attr("opacity", 0.3);
+    
+      // Recalculate and update tooltip and focus line to stay within chart bounds
+      updateVisualization();
+    }
     
     svg.append("g")
       .attr("class", "x-axis")
