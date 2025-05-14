@@ -374,7 +374,7 @@ tempCheckbox.on("change", function() {
       .attr("transform", `translate(${width},0)`)
       .call(d3.axisRight(yTemp))
       .append("text")
-      .attr("transform", "rotate(-90)")
+      .attr("transform", "rotate(90)")
       .attr("y", -40)
       .attr("x", height / 2)
       .attr("fill", "#000")
@@ -402,7 +402,7 @@ tempCheckbox.on("change", function() {
       
     legend.append("text")
       .attr("x", 25).attr("y", 25)
-      .text("Average Temperature (Right Axis)");
+      .text("Average Temperature (°C) (Right Axis)");
   })
   .catch(error => {
     console.error("Error loading the CSV file:", error);
