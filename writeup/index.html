@@ -11,7 +11,98 @@
     
 <body>
     <div class="container">
-    
+    <section class="writeup container">
+
+        <p>
+    At the heart of this project, <strong> Team DASS</strong> (Divyansh, Ahmed, Subika, and Supriyaa) embarked on an exhilarating journey into the daily rhythms of life.  
+    Drawing on a detailed 14-day record of mouse activity and ambient temperature, we set out to reveal how environmental cues, such as light, dark, and heat, shape behavior.  
+    We invite you to dive in and uncover the hidden patterns that guide our curious subjects through each day and night!
+  </p>
+  <h2>Design Rationale</h2>
+
+  <h3>1. Chart Type &amp; Visual Encodings</h3>
+  <p>
+    We wanted to show how mice activity and temperature co-vary over the 24-hour cycle, yet these two variables live on very different scales.
+    A <strong>dual-axis line chart</strong> lets us overlay their trends without overwhelming the viewer.
+  </p>
+  <ul>
+    <li><strong>Activity (steelblue)</strong> and <strong>Temperature (tomato)</strong> provide high contrast yet remain harmonious.</li>
+    <li><strong>Day/night bands</strong> (lightyellow/grey) reinforce the circadian context without distracting from the data lines.</li>
+  </ul>
+  <p><em>Alternatives considered:</em> heatmap (too busy), scatterplot (overplotting), small multiples (forced mental alignment).</p>
+
+  <h3>2. Interaction Techniques</h3>
+  <div class="table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th>Control</th>
+        <th>User Task</th>
+        <th>Rationale &amp; Alternatives</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Play/Pause</strong></td>
+        <td>Watch the full day’s activity unfold over time.</td>
+        <td>Cinema-style animation; steps felt slower.</td>
+      </tr>
+      <tr>
+        <td><strong>Scrubber slider</strong></td>
+        <td>Jump straight to 6 PM (or any specific minute).</td>
+        <td>More discoverable than clicking the axis directly.</td>
+      </tr>
+      <tr>
+        <td><strong>Speed dropdown</strong></td>
+        <td>Slow down the animation to inspect subtle dips.</td>
+        <td>Options set via trial and error for 0.5×, 1×, 2× speeds.</td>
+      </tr>
+      <tr>
+        <td><strong>Focus line &amp; tooltip</strong></td>
+        <td>Read off exact values at the hovered time.</td>
+        <td>Vertical line + floating tooltip is precise; axis labels would clutter.</td>
+      </tr>
+      <tr>
+        <td><strong>Series checkboxes</strong></td>
+        <td>Isolate one metric to reduce visual noise.</td>
+        <td>Checkboxes are familiar; icon buttons lacked clear affordance.</td>
+      </tr>
+      <tr>
+        <td><strong>Mouse dropdown selector</strong></td>
+        <td>Select any individual mouse to view its specific activity and temperature patterns.</td>
+        <td>A dropdown offers quick, reliable selection from the full set of mice; we considered a search box but with a limited number of subjects a simple dropdown proved most user-friendly.</td>
+    </tr>
+    </tbody>
+  </table>
+  </div>
+  <p>
+    Tick marks are at two-hour intervals to minimize clutter, and “midnight” replaces 0:00/24:00 to avoid ambiguity.
+  </p>
+
+  <h2>Development Process</h2>
+
+  <h3>Team Roles &amp; Time</h3>
+  <ul>
+    <li><strong>Ahmed Ageel &amp; Supriya Chordia</strong> (3–4 hrs each): Brainstormed chart types, colors, and interactions; drafted project documentation.</li>
+    <li><strong>Divyansh Kanodia &amp; Subika Haider</strong> (6–7 hrs each): Implemented D3 aggregation, dual axes, shading logic, and all interactive controls.</li>
+  </ul>
+  
+
+  <h3>Workflow &amp; Tools</h3>
+  <ul>
+    <li>Version control &amp; collaboration via <strong>GitHub</strong>.</li>
+    <li>Technologies: <strong> JavaScript (D3)</strong> and <strong>CSS</strong>.</li>
+    <li>Local preview with VS Code Live Server; deployed on GitHub Pages.</li>
+  </ul>
+
+  <h3>Challenges &amp; Learnings</h3>
+  <ul>
+    <li>The scrubber slider proved tricky: syncing with the playback timer, updating the focus line, and debouncing rapid input.</li>
+    <li>Mobile layout largely works but we do need to tweak it to look more flawless and be a better, more user-friendly experience.</li>
+
+  </ul>
+</section>
+
     </div>
     
 </body>
