@@ -70,13 +70,14 @@ function initVisualization() {
     let currentTime = 0;
     let animationRate = 1;
     
+
     playButton.on("click", () => {
       playing = !playing;
       if (playing) {
-        playButton.text("Stop"); // Change button text to Stop
+        playButton.classed("playing", true).classed("stopped", false);
         timer = setInterval(updateTime, 200);
       } else {
-        playButton.text("Play"); // Change button text to Play
+        playButton.classed("playing", false).classed("stopped", true);
         clearInterval(timer);
       }
     });
