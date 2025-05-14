@@ -232,3 +232,16 @@ input[type="checkbox"]:checked {
     align-items: center;
   }
 }
+
+
+.play-icon {
+  width: 0;
+  height: 0;
+  border-left: 20px solid black;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  border-right: none;
+}
