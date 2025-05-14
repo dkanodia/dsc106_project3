@@ -183,7 +183,7 @@ nav,
 #mouse-dropdown,
 #speed-dropdown {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   border-radius: 5px;
   border: 1px solid #ddd;
   background-color: #fff;
@@ -191,11 +191,20 @@ nav,
   transition: border-color 0.2s ease;
 }
 
+#mouse-dropdown{
+  margin-bottom: 10px;
+}
+
+#speed-dropdown{
+  margin-top: 10px;
+}
+
 #mouse-dropdown:focus,
 #speed-dropdown:focus {
   outline: none;
   border-color: #0077b6;
   background-color: #f0f8ff;
+
 }
 
 /* Checkbox and Label Styling */
@@ -257,7 +266,7 @@ input[type="checkbox"]:checked {
 .play-icon.playing::before {
   content: "";
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   background-color: black;
 }
