@@ -257,7 +257,12 @@ tempCheckbox.on("change", function() {
       .data(["all", ...mouseIds])  // Add "all" as the first option
       .enter().append("option")
       .attr("value", d => d)
-      .text(d => d === "all" ? "All Mice" : `Mouse ${d}`);
+      .text(d => {
+        if (d === "all") return "All Mice";
+        if (d.startsWith("m")) return `Male Mouse ${d.slice(1)}`;
+        if (d.startsWith("f")) return `Female Mouse ${d.slice(1)}`;
+        return d;
+      });
     
     mouseDropdown.on("change", function() {
       const mouseId = this.value;
