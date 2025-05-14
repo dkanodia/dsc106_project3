@@ -121,9 +121,9 @@ speedDropdown.on("change", function() {
       .data(segments)
       .enter().append("rect")
       .attr("class", d => d.light ? "bg light" : "bg dark")
-      .attr("x", d => x(d.start))
+      .attr("x", d => Math.max(0, x(d.start)))
       .attr("y", 0)
-      .attr("width", d => x(d.end) - x(d.start))
+      .attr("width", d => Math.min(x(d.end), width) - Math.max(0, x(d.start)))
       .attr("height", height)
       .attr("opacity", 0.3);
 
@@ -285,6 +285,7 @@ tempCheckbox.on("change", function() {
         light: d.light === "True"
       }));
 
+
       // Recalculate rolled data based on filtered data
       const newRolled = Array.from(
         d3.rollup(
@@ -304,25 +305,28 @@ tempCheckbox.on("change", function() {
     });
 
     function updateChart(newRolled) {
-      // Rebind the updated data
-      svg.selectAll(".activity-line")
-        .datum(newRolled)
-        .attr("d", lineAct);
+      // Update the scale domains
+  yAct.domain([0, d3.max(newRolled, d => d.avgAct)]).nice();
+  yTemp.domain(d3.extent(newRolled, d => d.avgTemp)).nice();
+
+  // Recreate the line generators with the new scales
+  const lineAct = d3.line()
+    .x(d => x(d.min))
+    .y(d => yAct(d.avgAct));
+
+  const lineTemp = d3.line()
+    .x(d => x(d.min))
+    .y(d => yTemp(d.avgTemp));
+
+  // Update the lines
+  svg.selectAll(".activity-line")
+    .datum(newRolled)
+    .attr("d", lineAct);
+
+  svg.selectAll(".temperature-line")
+    .datum(newRolled)
+    .attr("d", lineTemp);
     
-      svg.selectAll(".temperature-line")
-        .datum(newRolled)
-        .attr("d", lineTemp);
-    
-      // Update the x-axis and y-axes with the new data, ensuring they stay within the chart bounds
-      yAct.domain([0, d3.max(newRolled, d => d.avgAct)]).nice();
-      yTemp.domain(d3.extent(newRolled, d => d.avgTemp)).nice();
-    
-      // Clip the range of the y-axis to the height of the chart
-      svg.select(".y-axis-left")
-        .call(d3.axisLeft(yAct).ticks(5));
-    
-      svg.select(".y-axis-right")
-        .call(d3.axisRight(yTemp).ticks(5));
     
       // Update the x-axis, ensuring the range does not go beyond the chart width
       svg.select(".x-axis")
@@ -341,15 +345,19 @@ tempCheckbox.on("change", function() {
       segments.push({ start: segStart, end: 1440, light: segLight });
     
       svg.selectAll("rect.bg")
-        .data(segments)
-        .join("rect")
-        .attr("class", d => d.light ? "bg light" : "bg dark")
-        .attr("x", d => x(d.start))
-        .attr("y", 0)
-        .attr("width", d => Math.min(x(d.end), width))  // Ensure width doesn't go beyond the chart
-        .attr("height", height)
-        .attr("opacity", 0.3);
-    
+  .data(segments)
+  .join("rect")
+  .attr("class", d => d.light ? "bg light" : "bg dark")
+  .attr("x", d => Math.max(0, x(Math.max(0, d.start))))
+  .attr("y", 0)
+  .attr("width", d => {
+    const xStart = Math.max(0, x(Math.max(0, d.start)));
+    const xEnd = Math.min(width, x(Math.min(1440, d.end)));
+    return Math.max(0, xEnd - xStart);
+  })
+  .attr("height", height)
+  .attr("opacity", 0.3);
+
       // Recalculate and update tooltip and focus line to stay within chart bounds
       updateVisualization();
     }
@@ -365,7 +373,8 @@ tempCheckbox.on("change", function() {
       .attr("text-anchor", "middle")
       .text("Time of Day");
 
-    svg.append("g")
+      svg.append("g")
+      .attr("class", "y-axis-left")
       .call(d3.axisLeft(yAct))
       .append("text")
       .attr("transform", "rotate(-90)")
@@ -374,8 +383,9 @@ tempCheckbox.on("change", function() {
       .attr("fill", "#000")
       .attr("text-anchor", "middle")
       .text("Activity Level");
-
+    
     svg.append("g")
+      .attr("class", "y-axis-right")
       .attr("transform", `translate(${width},0)`)
       .call(d3.axisRight(yTemp))
       .append("text")
