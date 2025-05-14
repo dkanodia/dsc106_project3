@@ -14,8 +14,7 @@ window.BASE_PATH = baseEl ? baseEl.getAttribute("href") : "/";
 // Navigation setup
 const pages = [
   { url: '/', title: 'Interactive Visualization' },
-  { url: '/writeup/', title: 'Writeup' },
-  { url: '/about/', title: 'About' }
+  { url: '/writeup/', title: 'Writeup' }
 ];
 
 const nav = document.createElement('nav');
