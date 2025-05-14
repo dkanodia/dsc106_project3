@@ -309,6 +309,7 @@ tempCheckbox.on("change", function() {
   yAct.domain([0, d3.max(newRolled, d => d.avgAct)]).nice();
   yTemp.domain(d3.extent(newRolled, d => d.avgTemp)).nice();
 
+  
   // Recreate the line generators with the new scales
   const lineAct = d3.line()
     .x(d => x(d.min))
