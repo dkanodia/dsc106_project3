@@ -8,7 +8,7 @@ nav {
 }
 nav a {
   flex: 1;
-  padding: 0.5em;
+  padding: 1em;
   text-decoration: none;
   color: inherit;
   text-align: center;
@@ -201,11 +201,14 @@ nav,
 /* Checkbox and Label Styling */
 label {
   font-size: 14px;
-  margin-left: 5px;
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 
 input[type="checkbox"] {
   margin-right: 5px;
+  margin-bottom: 20px;
+
 }
 
 input[type="checkbox"]:checked {
