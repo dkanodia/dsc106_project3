@@ -1,3 +1,7 @@
+// Global variables
+let rolled = [];
+let originalRolled = [];
+
 function loadD3() {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script');
@@ -43,9 +47,9 @@ function initVisualization() {
       mouse_id: d.mouse_id,
       light: d.light === "True"
     }));
-    
+
     // Process data by rolling up
-    const rolled = Array.from(
+    rolled = Array.from(
       d3.rollup(
         data,
         v => ({
@@ -57,6 +61,7 @@ function initVisualization() {
       ),
       ([min, vals]) => ({ min, ...vals })
     ).sort((a, b) => a.min - b.min);
+    originalRolled = [...rolled]; // Store full version
 
     const x = d3.scaleLinear().domain([0, 1440]).range([0, width]);
     const yAct = d3.scaleLinear().domain([0, d3.max(rolled, d => d.avgAct)]).nice().range([height, 0]);
@@ -279,7 +284,7 @@ tempCheckbox.on("change", function() {
         mouse_id: d.mouse_id,
         light: d.light === "True"
       }));
-    
+
       // Recalculate rolled data based on filtered data
       const newRolled = Array.from(
         d3.rollup(
